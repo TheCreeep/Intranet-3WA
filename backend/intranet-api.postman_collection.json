@@ -1,137 +1,236 @@
 {
 	"info": {
 		"_postman_id": "YOUR_COLLECTION_ID",
-		"name": "Intranet API - Users",
+		"name": "Intranet API - Users & Auth",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Get All Users",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/api/v1/users",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create User",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"gender\": \"female\",\n    \"firstname\": \"Jane\",\n    \"lastname\": \"Doe\",\n    \"email\": \"jane.doe@example.com\",\n    \"password\": \"password123\",\n    \"phone\": \"0123456789\",\n    \"birthdate\": \"1990-01-01\",\n    \"city\": \"Paris\",\n    \"country\": \"France\",\n    \"photo\": \"https://randomuser.me/api/portraits/women/1.jpg\",\n    \"category\": \"Technique\",\n    \"isAdmin\": false\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@admin.com\",\n    \"password\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{baseUrl}}/api/v1/users",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get User By ID",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/api/v1/users/YOUR_USER_ID",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"users",
-						"YOUR_USER_ID"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update User",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"firstname\": \"Jane Updated\",\n    \"city\": \"Lyon\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Get My Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+						    {
+						        "key": "Authorization",
+						        "value": "Bearer YOUR_ACCESS_TOKEN",
+						        "type": "text"
+						    }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"profile"
+							]
 						}
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/api/v1/users/YOUR_USER_ID",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"users",
-						"YOUR_USER_ID"
-					]
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Delete User",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/api/v1/users/YOUR_USER_ID",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"users",
-						"YOUR_USER_ID"
-					]
-				}
-			},
-			"response": []
+		    "name": "Users CRUD",
+		    "item": [
+		        {
+			        "name": "Get All Users",
+			        "request": {
+				        "method": "GET",
+				        "header": [
+				            {
+					            "key": "Authorization",
+					            "value": "Bearer YOUR_ACCESS_TOKEN",
+					            "type": "text"
+					        }
+				        ],
+				        "url": {
+					        "raw": "{{baseUrl}}/api/v1/users",
+					        "host": [
+						        "{{baseUrl}}"
+					        ],
+					        "path": [
+						        "api",
+						        "v1",
+						        "users"
+					        ]
+				        }
+			        },
+			        "response": []
+		        },
+		        {
+			        "name": "Create User (Admin Only)",
+			        "request": {
+				        "method": "POST",
+				        "header": [
+					        {
+						        "key": "Content-Type",
+						        "value": "application/json",
+						        "type": "text"
+					        },
+					        {
+					            "key": "Authorization",
+					            "value": "Bearer YOUR_ADMIN_ACCESS_TOKEN",
+					            "type": "text"
+					        }
+				        ],
+				        "body": {
+					        "mode": "raw",
+					        "raw": "{\n    \"gender\": \"female\",\n    \"firstname\": \"Test\",\n    \"lastname\": \"User\",\n    \"email\": \"test.user@example.com\",\n    \"password\": \"password123\",\n    \"phone\": \"0123456789\",\n    \"birthdate\": \"1995-05-05\",\n    \"city\": \"Testville\",\n    \"country\": \"Testland\",\n    \"photo\": \"https://randomuser.me/api/portraits/women/10.jpg\",\n    \"category\": \"Client\",\n    \"isAdmin\": false\n}",
+					        "options": {
+						        "raw": {
+							        "language": "json"
+						        }
+					        }
+				        },
+				        "url": {
+					        "raw": "{{baseUrl}}/api/v1/users",
+					        "host": [
+						        "{{baseUrl}}"
+					        ],
+					        "path": [
+						        "api",
+						        "v1",
+						        "users"
+					        ]
+				        }
+			        },
+			        "response": []
+		        },
+		        {
+			        "name": "Get User By ID",
+			        "request": {
+				        "method": "GET",
+				        "header": [
+				            {
+					            "key": "Authorization",
+					            "value": "Bearer YOUR_ACCESS_TOKEN",
+					            "type": "text"
+					        }
+				        ],
+				        "url": {
+					        "raw": "{{baseUrl}}/api/v1/users/YOUR_USER_ID",
+					        "host": [
+						        "{{baseUrl}}"
+					        ],
+					        "path": [
+						        "api",
+						        "v1",
+						        "users",
+						        "YOUR_USER_ID"
+					        ]
+				        }
+			        },
+			        "response": []
+		        },
+		        {
+			        "name": "Update User (Admin Only)",
+			        "request": {
+				        "method": "PUT",
+				        "header": [
+					        {
+						        "key": "Content-Type",
+						        "value": "application/json",
+						        "type": "text"
+					        },
+					        {
+					            "key": "Authorization",
+					            "value": "Bearer YOUR_ADMIN_ACCESS_TOKEN",
+					            "type": "text"
+					        }
+				        ],
+				        "body": {
+					        "mode": "raw",
+					        "raw": "{\n    \"firstname\": \"Test User Updated\",\n    \"city\": \"New Testville\"\n}",
+					        "options": {
+						        "raw": {
+							        "language": "json"
+						        }
+					        }
+				        },
+				        "url": {
+					        "raw": "{{baseUrl}}/api/v1/users/YOUR_USER_ID",
+					        "host": [
+						        "{{baseUrl}}"
+					        ],
+					        "path": [
+						        "api",
+						        "v1",
+						        "users",
+						        "YOUR_USER_ID"
+					        ]
+				        }
+			        },
+			        "response": []
+		        },
+		        {
+			        "name": "Delete User (Admin Only)",
+			        "request": {
+				        "method": "DELETE",
+				        "header": [
+				            {
+					            "key": "Authorization",
+					            "value": "Bearer YOUR_ADMIN_ACCESS_TOKEN",
+					            "type": "text"
+					        }
+				        ],
+				        "url": {
+					        "raw": "{{baseUrl}}/api/v1/users/YOUR_USER_ID",
+					        "host": [
+						        "{{baseUrl}}"
+					        ],
+					        "path": [
+						        "api",
+						        "v1",
+						        "users",
+						        "YOUR_USER_ID"
+					        ]
+				        }
+			        },
+			        "response": []
+		        }
+		    ]
 		}
 	],
 	"event": [
@@ -159,6 +258,21 @@
 			"key": "baseUrl",
 			"value": "http://localhost:3000",
 			"type": "default"
+		},
+		{
+		    "key": "YOUR_ACCESS_TOKEN",
+		    "value": "PASTE_TOKEN_HERE_AFTER_LOGIN",
+		    "type": "string"
+		},
+		{
+		    "key": "YOUR_ADMIN_ACCESS_TOKEN",
+		    "value": "PASTE_ADMIN_TOKEN_HERE_AFTER_LOGIN",
+		    "type": "string"
+		},
+		{
+		    "key": "YOUR_USER_ID",
+		    "value": "PASTE_USER_ID_HERE_FOR_TESTING",
+		    "type": "string"
 		}
 	]
 } 

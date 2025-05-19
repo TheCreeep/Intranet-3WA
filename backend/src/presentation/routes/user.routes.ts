@@ -2,7 +2,9 @@ import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import { UserController } from '../controllers/user.controller';
 import { MongooseUserRepository } from '../../infrastructure/repositories/mongoose.user.repository';
 import { PasswordService } from '../../infrastructure/auth/password.service';
+import { AuthService } from '../../infrastructure/auth/auth.service';
 import { CreateUserDto, UpdateUserDto } from '../../application/dto/user.dto';
+import { buildAuthHooks } from '../hooks/auth.hooks';
 
 // Define schemas for validation and serialization
 const createUserSchema = {
@@ -62,15 +64,34 @@ export default function userRoutes(fastify: FastifyInstance, options: FastifyPlu
   const userRepository = new MongooseUserRepository();
   const passwordService = new PasswordService();
   const userController = new UserController(userRepository, passwordService);
+  const authService = new AuthService(userRepository, passwordService);
+  const { authenticateHook, adminOnlyHook } = buildAuthHooks(authService, userRepository);
 
-  fastify.post<{ Body: CreateUserDto }>('/users', { schema: createUserSchema }, userController.createUser.bind(userController));
-  fastify.get('/users', userController.getAllUsers.bind(userController));
-  fastify.get('/users/:id', {schema: idParamSchema}, userController.getUserById.bind(userController));
+  fastify.post<{ Body: CreateUserDto }>(
+    '/users', 
+    { schema: createUserSchema, preHandler: [authenticateHook, adminOnlyHook] }, 
+    userController.createUser.bind(userController)
+  );
+  fastify.get(
+    '/users', 
+    { preHandler: [authenticateHook] }, 
+    userController.getAllUsers.bind(userController)
+  );
+  fastify.get<{ Params: { id: string } }>(
+    '/users/:id', 
+    {schema: idParamSchema, preHandler: [authenticateHook]}, 
+    userController.getUserById.bind(userController)
+  );
   fastify.put<{ Body: UpdateUserDto; Params: { id: string } }>(
     '/users/:id',
-    { schema: { ...idParamSchema, ...updateUserSchema } }, 
-    userController.updateUser.bind(userController));
-  fastify.delete('/users/:id', {schema: idParamSchema}, userController.deleteUser.bind(userController));
+    { schema: { ...idParamSchema, ...updateUserSchema }, preHandler: [authenticateHook, adminOnlyHook] }, 
+    userController.updateUser.bind(userController)
+  );
+  fastify.delete<{ Params: { id: string } }>(
+    '/users/:id', 
+    {schema: idParamSchema, preHandler: [authenticateHook, adminOnlyHook]}, 
+    userController.deleteUser.bind(userController)
+  );
 
   done();
 } 

@@ -1,14 +1,22 @@
 import Fastify from 'fastify';
 import connectDB from './infrastructure/database/mongoose.config';
 import userRoutes from './presentation/routes/user.routes';
+import authRoutes from './presentation/routes/auth.routes';
 import dotenv from 'dotenv';
 import { ensureSeedData } from './infrastructure/database/seed'; // Import the seeder function
+import fastifyCookie from '@fastify/cookie'; // Import fastify-cookie
 
 // Load environment variables from .env file in the backend directory
 dotenv.config({ path: '../.env' }); // if server.ts is in src, .env is one level up
 
 const server = Fastify({
   logger: true, // Enables Fastify's built-in Pino logger
+});
+
+// Register fastify-cookie plugin
+server.register(fastifyCookie, {
+  secret: process.env.COOKIE_SECRET || 'your-fallback-cookie-secret', // For signed cookies
+  // other options can be added here
 });
 
 // Global error handler (optional, can be customized)
@@ -32,6 +40,7 @@ const start = async () => {
     await ensureSeedData();
 
     // Register routes after DB connection and seeding attempt
+    server.register(authRoutes, { prefix: '/api/v1/auth' });
     server.register(userRoutes, { prefix: '/api/v1' });
 
     const port = Number(process.env.PORT) || 3000;
