@@ -5,18 +5,13 @@ import authRoutes from './presentation/routes/auth.routes';
 import dotenv from 'dotenv';
 import { ensureSeedData } from './infrastructure/database/seed'; // Import the seeder function
 import fastifyCookie from '@fastify/cookie'; // Import fastify-cookie
+import cors from '@fastify/cors'; // Import the CORS plugin
 
 // Load environment variables from .env file in the backend directory
 dotenv.config({ path: '../.env' }); // if server.ts is in src, .env is one level up
 
 const server = Fastify({
   logger: true, // Enables Fastify's built-in Pino logger
-});
-
-// Register fastify-cookie plugin
-server.register(fastifyCookie, {
-  secret: process.env.COOKIE_SECRET || 'your-fallback-cookie-secret', // For signed cookies
-  // other options can be added here
 });
 
 // Global error handler (optional, can be customized)
@@ -32,7 +27,25 @@ server.setErrorHandler((error, request, reply) => {
 
 const start = async () => {
   try {
-    // Connect to Database first
+    // Register fastify-cookie plugin
+    // Note: If fastifyCookie itself doesn't return a promise or isn't async, await isn't strictly needed here.
+    // However, keeping it consistent with other registrations if they were async.
+    await server.register(fastifyCookie, {
+      secret: process.env.COOKIE_SECRET || 'your-fallback-cookie-secret',
+    });
+    server.log.info('Cookie plugin registered.');
+
+    // Register CORS plugin
+    await server.register(cors, {
+      origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      credentials: true,
+      optionsSuccessStatus: 204
+    });
+    server.log.info('CORS plugin registered.');
+
+    // Connect to Database
     await connectDB();
     server.log.info('Database connected successfully.');
 
@@ -42,6 +55,7 @@ const start = async () => {
     // Register routes after DB connection and seeding attempt
     server.register(authRoutes, { prefix: '/api/v1/auth' });
     server.register(userRoutes, { prefix: '/api/v1' });
+    server.log.info('Routes registered.');
 
     const port = Number(process.env.PORT) || 3000;
     await server.listen({ port, host: '0.0.0.0' });

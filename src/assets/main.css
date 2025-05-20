@@ -1,12 +1,6 @@
 @import './base.css';
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
-}
-
+/* Keep these styles for now, they might be general utility styles */
 a,
 .green {
   text-decoration: none;
@@ -21,15 +15,10 @@ a,
   }
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
-}
+/* 
+  The #app styles and the @media (min-width: 1024px) block 
+  that restyled body and #app have been removed to allow 
+  route components like LoginView to control their own full-page layout.
+  #app will now inherit its display from body or be a simple block, 
+  and body already has min-height: 100vh from base.css.
+*/
