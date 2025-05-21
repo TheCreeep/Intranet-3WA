@@ -53,7 +53,7 @@ export class CreateUserDto {
 }
 
 // DTO for updating a user (all fields optional)
-export class UpdateUserDto {
+export interface UpdateUserDto {
   gender?: UserGender;
   firstname?: string;
   lastname?: string;
@@ -66,4 +66,19 @@ export class UpdateUserDto {
   photo?: string;
   category?: UserCategory;
   isAdmin?: boolean;
+}
+
+// New DTO for self-profile updates
+export interface UpdateSelfUserDto {
+  gender?: UserGender;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  password?: string; // For password changes by the user themselves
+  phone?: string;
+  birthdate?: string;
+  city?: string;
+  country?: string;
+  photo?: string;
+  category?: UserCategory;
 } 

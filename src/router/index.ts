@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory, type RouteLocationNormalized } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import CollaboratorSearchView from '../views/CollaboratorSearchView.vue'
+import AdminView from '../views/AdminView.vue'; // Import AdminView
+import ProfileView from '../views/ProfileView.vue'; // Import ProfileView
 import { useAuthStore } from '../store/authStore';
 
 // REMOVED: Top-level store instantiation and initialization will be moved to main.ts
@@ -29,18 +31,23 @@ const router = createRouter({
       meta: { requiresAuth: false } // Public route
     },
     {
-      path: '/collaborator-search',
-      name: 'collaboratorSearch',
+      path: '/collaborateurs', // Changed from /collaborator-search to match navbar link
+      name: 'collaborateurs',   // Changed from collaboratorSearch
       component: CollaboratorSearchView,
       meta: { requiresAuth: true } // Protected route
     },
-    // Example Admin Route (ensure AdminDashboardView.vue exists if uncommented)
-    // {
-    //   path: '/admin',
-    //   name: 'adminDashboard',
-    //   component: () => import('../views/AdminDashboardView.vue'), 
-    //   meta: { requiresAuth: true, roles: ['admin'] }
-    // },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminView,
+      meta: { requiresAuth: true, roles: ['admin'] } // Protected admin route
+    },
+    {
+      path: '/profil',
+      name: 'profil',
+      component: ProfileView,
+      meta: { requiresAuth: true } // Protected profile route
+    },
     {
       path: '/', // Root path
       redirect: () => {
@@ -48,9 +55,9 @@ const router = createRouter({
           const role = getUserRole();
           if (role === 'admin') {
             // return { name: 'adminDashboard' }; // Redirect admin to their dashboard
-            return { name: 'collaboratorSearch' }; // Or common authenticated page
+            return { name: 'collaborateurs' }; // Default to collaborateurs for admin
           }
-          return { name: 'collaboratorSearch' }; // Default for other authenticated users
+          return { name: 'collaborateurs' }; // Default for other authenticated users
         }
         return { name: 'login' }; // Redirect unauthenticated to login
       }
@@ -60,7 +67,7 @@ const router = createRouter({
       path: '/:pathMatch(.*)*', 
       redirect: () => {
         if (isAuthenticated()) {
-          return { name: 'collaboratorSearch' }; // Or a 404 page for authenticated users
+          return { name: 'collaborateurs' }; // Or a 404 page for authenticated users
         }
         return { name: 'login' };
       }
@@ -72,6 +79,7 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
   const store = useAuthStore(); // Get store instance inside guard
   const authenticated = store.isLoggedIn;
   const userRole = store.userRole;
+  const userIsAdminFlag = store.currentUser?.isAdmin; // Get the isAdmin flag
   
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const requiredRoles = to.meta.roles as string[] | undefined;
@@ -84,17 +92,21 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
     // If user is logged in and tries to access login page, redirect to a default authenticated page
     if (userRole === 'admin') {
       // next({ name: 'adminDashboard' });
-      next({ name: 'collaboratorSearch' });
+      next({ name: 'collaborateurs' });
     } else {
-      next({ name: 'collaboratorSearch' });
+      next({ name: 'collaborateurs' });
     }
   } else if (requiresAuth && authenticated && requiredRoles) {
     // If route requires specific roles
-    if (!userRole || !requiredRoles.includes(userRole)) {
+    const hasRequiredRole =
+      (userRole && requiredRoles.map(r => r.toLowerCase()).includes(userRole.toLowerCase())) ||
+      (requiredRoles.includes('admin') && userIsAdminFlag === true); // Also check isAdmin flag if 'admin' role is required
+
+    if (!hasRequiredRole) {
       // User does not have the required role, redirect to an unauthorized page or a fallback
-      // For now, redirecting to collaboratorSearch or a generic 'unauthorized' view if you create one.
+      // For now, redirecting to collaborateurs or a generic 'unauthorized' view if you create one.
       // Or simply don't let them navigate by calling next(false) or next({ name: 'fallbackRoute' })
-      next({ name: 'collaboratorSearch' }); // Fallback, consider an 'UnauthorizedView' page
+      next({ name: 'collaborateurs' }); // Fallback, consider an 'UnauthorizedView' page
     } else {
       next(); // User has the role, proceed
     }

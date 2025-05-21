@@ -3,7 +3,7 @@ import { UserController } from "../controllers/user.controller";
 import { MongooseUserRepository } from "../../infrastructure/repositories/mongoose.user.repository";
 import { PasswordService } from "../../infrastructure/auth/password.service";
 import { AuthService } from "../../infrastructure/auth/auth.service";
-import { CreateUserDto, UpdateUserDto } from "../../application/dto/user.dto";
+import { CreateUserDto, UpdateUserDto, UpdateSelfUserDto } from "../../application/dto/user.dto";
 import { buildAuthHooks } from "../hooks/auth.hooks";
 
 // Define schemas for validation and serialization
@@ -72,6 +72,28 @@ const idParamSchema = {
   },
 };
 
+// Schema for self-profile update (omits isAdmin)
+const updateSelfProfileSchema = {
+  body: {
+    type: "object",
+    properties: {
+      gender: { type: "string", enum: ["male", "female"] },
+      firstname: { type: "string", minLength: 1 },
+      lastname: { type: "string", minLength: 1 },
+      email: { type: "string", format: "email" },
+      password: { type: "string", minLength: 6 }, // For password changes
+      phone: { type: "string" },
+      birthdate: { type: "string", format: "date" },
+      city: { type: "string" },
+      country: { type: "string" },
+      photo: { type: "string", format: "url" },
+      category: { type: "string", enum: ["Marketing", "Client", "Technique"] },
+      // isAdmin is intentionally omitted
+    },
+    additionalProperties: false,
+  },
+};
+
 export default function userRoutes(
   fastify: FastifyInstance,
   options: FastifyPluginOptions,
@@ -113,6 +135,16 @@ export default function userRoutes(
     "/users/:id",
     { schema: idParamSchema, preHandler: [authenticateHook, adminOnlyHook] },
     userController.deleteUser.bind(userController)
+  );
+
+  // New Route: PUT /profile (Authenticated users for their own profile)
+  fastify.put<{ Body: UpdateSelfUserDto }>( // Use UpdateSelfUserDto here
+    "/profile",
+    {
+      schema: updateSelfProfileSchema, // Use the new schema
+      preHandler: [authenticateHook], // Only authentication needed, not admin rights
+    },
+    userController.updateOwnProfile.bind(userController)
   );
 
   done();

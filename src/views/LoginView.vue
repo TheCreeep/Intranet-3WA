@@ -92,6 +92,7 @@ const handleLogin = async () => {
   background-color: #f0f2f5; /* Light gray background */
   padding: 1rem;
   box-sizing: border-box;
+  transition: background-color 0.3s ease;
 }
 
 .login-container {
@@ -102,6 +103,7 @@ const handleLogin = async () => {
   width: 100%;
   max-width: 400px;
   text-align: center;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .title {
@@ -109,6 +111,7 @@ const handleLogin = async () => {
   font-weight: 600;
   color: #333;
   margin-bottom: 2rem;
+  transition: color 0.3s ease;
 }
 
 .login-form .input-group {
@@ -122,6 +125,7 @@ const handleLogin = async () => {
   font-weight: 500;
   color: #555;
   margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
 }
 
 .login-form input[type="email"],
@@ -130,9 +134,11 @@ const handleLogin = async () => {
   padding: 0.75rem 1rem;
   font-size: 1rem;
   border: 1px solid #d1d5db; /* Light gray border */
+  background-color: #fff; /* Explicit light background for input */
+  color: #333; /* Explicit light text color for input */
   border-radius: 6px;
   box-sizing: border-box;
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.3s ease, color 0.3s ease;
 }
 
 .login-form input[type="email"]:focus,
@@ -144,6 +150,7 @@ const handleLogin = async () => {
 
 .login-form input::placeholder {
   color: #a0aec0; /* Lighter placeholder text */
+  transition: color 0.3s ease;
 }
 
 .login-button {
@@ -156,7 +163,7 @@ const handleLogin = async () => {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out, color 0.3s ease;
 }
 
 .login-button:hover {
@@ -169,9 +176,62 @@ const handleLogin = async () => {
 }
 
 .error-message {
-  color: red;
+  color: red; /* Standard error color, adjust if needed for dark mode */
   margin-bottom: 1rem;
   font-size: 0.875rem;
+}
+
+/* Dark Mode Styles for LoginView */
+body.dark-theme-enabled .login-view {
+  background-color: #1a202c; /* Dark background for the view */
+}
+
+body.dark-theme-enabled .login-container {
+  background-color: #2d3748; /* Darker container background */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-theme-enabled .title {
+  color: #e2e8f0; /* Lighter title color */
+}
+
+body.dark-theme-enabled .login-form label {
+  color: #a0aec0; /* Lighter label color */
+}
+
+body.dark-theme-enabled .login-form input[type="email"],
+body.dark-theme-enabled .login-form input[type="password"] {
+  background-color: #1a202c; /* Dark input background */
+  border-color: #4a5568;    /* Darker input border */
+  color: #e2e8f0;           /* Light input text color */
+}
+
+body.dark-theme-enabled .login-form input[type="email"]:focus,
+body.dark-theme-enabled .login-form input[type="password"]:focus {
+  border-color: #3182ce; /* Adjusted focus border color for dark theme */
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.4); /* Adjusted focus shadow for dark theme */
+}
+
+body.dark-theme-enabled .login-form input::placeholder {
+  color: #718096; /* Adjusted placeholder color for dark theme */
+}
+
+body.dark-theme-enabled .login-button {
+  background-color: #3182ce; /* Adjusted button color for dark theme */
+  color: #ffffff;
+}
+
+body.dark-theme-enabled .login-button:hover {
+  background-color: #2b6cb0;
+}
+
+body.dark-theme-enabled .login-button:disabled {
+  background-color: #4a5568;
+  color: #a0aec0;
+}
+
+body.dark-theme-enabled .error-message {
+  color: #feb2b2; /* Lighter red for dark backgrounds */
 }
 
 /* Responsive adjustments */

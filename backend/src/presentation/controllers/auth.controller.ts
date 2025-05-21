@@ -31,8 +31,8 @@ export class AuthController {
         // maxAge: parseInt(process.env.JWT_EXPIRES_IN_SECONDS || '3600') // Alternative to expires
       });
       
-      // Send user DTO in the response body
-      reply.code(200).send({ user: userDto }); // No need to send token in body now
+      // Send user DTO and token in the response body
+      reply.code(200).send({ user: userDto, token: token });
 
     } catch (error: any) {
       console.error('Login error:', error);
