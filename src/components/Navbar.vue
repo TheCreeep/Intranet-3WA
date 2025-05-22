@@ -49,6 +49,10 @@ const handleLogout = () => {
   align-items: center;
   width: 100%;
   box-sizing: border-box;
+  position: fixed; /* Fixed position to keep it at the top */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* High z-index to keep it above other content */
 }
 
 .navbar-brand .brand-text {

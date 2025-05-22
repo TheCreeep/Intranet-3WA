@@ -5,7 +5,9 @@ import Navbar from './components/Navbar.vue';
 
 <template>
   <Navbar />
-  <router-view />
+  <div class="content-wrapper">
+    <router-view />
+  </div>
 </template>
 
 <style>
@@ -17,5 +19,10 @@ body {
 
 #app {
   /* You might want to ensure the app takes full height or has specific layout properties */
+}
+
+/* Add padding to account for the fixed navbar */
+.content-wrapper {
+  padding-top: 60px; /* Adjust this value based on your navbar height */
 }
 </style>
