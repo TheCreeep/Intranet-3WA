@@ -50,7 +50,7 @@ onMounted(() => {
   document.title = 'Connexion';
   // If user is already logged in (e.g. from persisted session), redirect them
   if (auth.isLoggedIn) {
-    router.push({ name: 'collaboratorSearch' }); // Or their role-specific dashboard
+    router.push({ name: 'collaborateurs' }); // Corrected route name
     return;
   }
   if (emailInput.value) {
@@ -70,9 +70,9 @@ const handleLogin = async () => {
     if (auth.isLoggedIn) {
       if (auth.userRole === 'admin') {
         // router.push({ name: 'adminDashboard' }); // Example for admin redirect
-        router.push({ name: 'collaboratorSearch' });
+        router.push({ name: 'collaborateurs' }); // Corrected route name
       } else {
-        router.push({ name: 'collaboratorSearch' });
+        router.push({ name: 'collaborateurs' }); // Corrected route name
       }
     }
   } catch (error) {

@@ -21,58 +21,61 @@ const getUserRole = (): string | null => {
   return store.userRole;
 }
 
+// Exporter les routes pour les tests
+export const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView,
+    meta: { requiresAuth: false } // Public route
+  },
+  {
+    path: '/collaborateurs', // Changed from /collaborator-search to match navbar link
+    name: 'collaborateurs',   // Changed from collaboratorSearch
+    component: CollaboratorSearchView,
+    meta: { requiresAuth: true } // Protected route
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: AdminView,
+    meta: { requiresAuth: true, roles: ['admin'] } // Protected admin route
+  },
+  {
+    path: '/profil',
+    name: 'profil',
+    component: ProfileView,
+    meta: { requiresAuth: true } // Protected profile route
+  },
+  {
+    path: '/', // Root path
+    redirect: () => {
+      if (isAuthenticated()) {
+        const role = getUserRole();
+        if (role === 'admin') {
+          // return { name: 'adminDashboard' }; // Redirect admin to their dashboard
+          return { name: 'collaborateurs' }; // Default to collaborateurs for admin
+        }
+        return { name: 'collaborateurs' }; // Default for other authenticated users
+      }
+      return { name: 'login' }; // Redirect unauthenticated to login
+    }
+  },
+  {
+    // Catch-all for unmatched routes, redirect based on auth status
+    path: '/:pathMatch(.*)*', 
+    redirect: () => {
+      if (isAuthenticated()) {
+        return { name: 'collaborateurs' }; // Or a 404 page for authenticated users
+      }
+      return { name: 'login' };
+    }
+  }
+]
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/login',
-      name: 'login',
-      component: LoginView,
-      meta: { requiresAuth: false } // Public route
-    },
-    {
-      path: '/collaborateurs', // Changed from /collaborator-search to match navbar link
-      name: 'collaborateurs',   // Changed from collaboratorSearch
-      component: CollaboratorSearchView,
-      meta: { requiresAuth: true } // Protected route
-    },
-    {
-      path: '/admin',
-      name: 'admin',
-      component: AdminView,
-      meta: { requiresAuth: true, roles: ['admin'] } // Protected admin route
-    },
-    {
-      path: '/profil',
-      name: 'profil',
-      component: ProfileView,
-      meta: { requiresAuth: true } // Protected profile route
-    },
-    {
-      path: '/', // Root path
-      redirect: () => {
-        if (isAuthenticated()) {
-          const role = getUserRole();
-          if (role === 'admin') {
-            // return { name: 'adminDashboard' }; // Redirect admin to their dashboard
-            return { name: 'collaborateurs' }; // Default to collaborateurs for admin
-          }
-          return { name: 'collaborateurs' }; // Default for other authenticated users
-        }
-        return { name: 'login' }; // Redirect unauthenticated to login
-      }
-    },
-    {
-      // Catch-all for unmatched routes, redirect based on auth status
-      path: '/:pathMatch(.*)*', 
-      redirect: () => {
-        if (isAuthenticated()) {
-          return { name: 'collaborateurs' }; // Or a 404 page for authenticated users
-        }
-        return { name: 'login' };
-      }
-    }
-  ]
+  routes
 })
 
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: Function) => {
