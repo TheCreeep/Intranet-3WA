@@ -104,7 +104,7 @@ describe('LoginView', () => {
     })
   })
 
-  it('redirects regular user to collaborateurs after successful login', async () => {
+  it('redirects regular user to accueil after successful login', async () => {
     // Configurer un login réussi
     authStore.login = vi.fn().mockImplementation(() => {
       authStore.isLoggedIn = true
@@ -121,10 +121,10 @@ describe('LoginView', () => {
     await flushPromises()
     
     // Vérifier la redirection
-    expect(router.push).toHaveBeenCalledWith({ name: 'collaborateurs' })
+    expect(router.push).toHaveBeenCalledWith({ name: 'accueil' })
   })
 
-  it('redirects admin to collaborateurs after successful login', async () => {
+  it('redirects admin to accueil after successful login', async () => {
     // Configurer un login réussi en tant qu'admin
     authStore.login = vi.fn().mockImplementation(() => {
       authStore.isLoggedIn = true
@@ -141,7 +141,7 @@ describe('LoginView', () => {
     await flushPromises()
     
     // Vérifier la redirection
-    expect(router.push).toHaveBeenCalledWith({ name: 'collaborateurs' })
+    expect(router.push).toHaveBeenCalledWith({ name: 'accueil' })
   })
 
   it('displays error message on login failure', async () => {

@@ -26,6 +26,10 @@ vi.mock('../../views/ProfileView.vue', () => ({
   default: { template: '<div>Profile</div>' }
 }))
 
+vi.mock('../../views/AccueilView.vue', () => ({
+  default: { template: '<div>Accueil</div>' }
+}))
+
 // Créer une fonction pour configurer le routeur avec des gardes personnalisés
 const createTestRouter = () => {
   // Créer le routeur
@@ -49,11 +53,7 @@ const createTestRouter = () => {
       next({ name: 'login', query: { redirect: to.fullPath } })
     } else if (to.name === 'login' && authenticated) {
       // Si l'utilisateur est connecté et essaie d'accéder à la page de connexion, rediriger vers une page authentifiée par défaut
-      if (userRole === 'admin') {
-        next({ name: 'collaborateurs' })
-      } else {
-        next({ name: 'collaborateurs' })
-      }
+      next({ name: 'accueil' })
     } else if (requiresAuth && authenticated && requiredRoles) {
       // Si la route nécessite des rôles spécifiques
       const hasRequiredRole =
@@ -62,7 +62,7 @@ const createTestRouter = () => {
 
       if (!hasRequiredRole) {
         // L'utilisateur n'a pas le rôle requis, rediriger vers une page non autorisée ou une solution de repli
-        next({ name: 'collaborateurs' })
+        next({ name: 'accueil' })
       } else {
         next() // L'utilisateur a le rôle, continuer
       }
@@ -119,7 +119,7 @@ describe('Router', () => {
       expect(testRouter.currentRoute.value.name).toBe('collaborateurs')
     })
 
-    it('redirects to collaborateurs when authenticated user tries to access login', async () => {
+    it('redirects to accueil when authenticated user tries to access login', async () => {
       // Créer un routeur pour ce test
       testRouter = createTestRouter()
 
@@ -133,11 +133,11 @@ describe('Router', () => {
       // Essayer de naviguer vers login
       await testRouter.push('/login')
       
-      // Devrait rediriger vers collaborateurs
-      expect(testRouter.currentRoute.value.name).toBe('collaborateurs')
+      // Devrait rediriger vers accueil
+      expect(testRouter.currentRoute.value.name).toBe('accueil')
     })
 
-    it('redirects admin to collaborateurs when trying to access login', async () => {
+    it('redirects admin to accueil when trying to access login', async () => {
       // Créer un routeur pour ce test
       testRouter = createTestRouter()
 
@@ -151,8 +151,8 @@ describe('Router', () => {
       // Essayer de naviguer vers login
       await testRouter.push('/login')
       
-      // Devrait rediriger vers collaborateurs (pourrait être adminDashboard à l'avenir)
-      expect(testRouter.currentRoute.value.name).toBe('collaborateurs')
+      // Devrait rediriger vers accueil
+      expect(testRouter.currentRoute.value.name).toBe('accueil')
     })
   })
 
@@ -189,8 +189,8 @@ describe('Router', () => {
       // Essayer de naviguer vers la route admin
       await testRouter.push('/admin')
       
-      // Devrait rediriger vers collaborateurs
-      expect(testRouter.currentRoute.value.name).toBe('collaborateurs')
+      // Devrait rediriger vers accueil
+      expect(testRouter.currentRoute.value.name).toBe('accueil')
     })
 
     it('allows user with isAdmin flag to access admin route regardless of role', async () => {
@@ -231,7 +231,7 @@ describe('Router', () => {
       expect(testRouter.currentRoute.value.name).toBe('login')
     })
 
-    it('redirects authenticated users to collaborateurs from root path', async () => {
+    it('redirects authenticated users to accueil from root path', async () => {
       // Créer un routeur pour ce test
       testRouter = createTestRouter()
 
@@ -245,11 +245,11 @@ describe('Router', () => {
       // Naviguer vers la racine
       await testRouter.push('/')
       
-      // Devrait rediriger vers collaborateurs
-      expect(testRouter.currentRoute.value.name).toBe('collaborateurs')
+      // Devrait rediriger vers accueil
+      expect(testRouter.currentRoute.value.name).toBe('accueil')
     })
 
-    it('redirects authenticated users to collaborateurs from unknown path', async () => {
+    it('redirects authenticated users to accueil from unknown path', async () => {
       // Créer un routeur pour ce test
       testRouter = createTestRouter()
 
@@ -263,8 +263,8 @@ describe('Router', () => {
       // Naviguer vers un chemin inconnu
       await testRouter.push('/invalid-path')
       
-      // Devrait rediriger vers collaborateurs
-      expect(testRouter.currentRoute.value.name).toBe('collaborateurs')
+      // Devrait rediriger vers accueil
+      expect(testRouter.currentRoute.value.name).toBe('accueil')
     })
 
     it('redirects unauthenticated users to login from unknown path', async () => {

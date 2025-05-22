@@ -1,40 +1,154 @@
-# Intranet 3WA
+# 🌐 Intranet 3WA
 
-Une application interne full-stack pour 3WA, comprenant un frontend Vue.js et un backend Fastify (Node.js) avec MongoDB.
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Build](https://img.shields.io/badge/build-passing-success.svg)
+![Tests](https://img.shields.io/badge/tests-passing-success.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Last Update](https://img.shields.io/badge/last%20update-2025-success.svg)
 
-## Table des Matières
+Une application interne full-stack permettant aux collaborateurs de 3WA de se retrouver facilement. Cette plateforme offre une interface moderne et intuitive pour consulter les profils des collaborateurs, avec une gestion sécurisée des utilisateurs.
 
-- [Configuration IDE Recommandée](#configuration-ide-recommandée)
-- [Stack Technique](#stack-technique)
-- [Structure du Projet](#structure-du-projet)
-- [Prérequis](#prérequis)
-- [Mise en Place du Projet](#mise-en-place-du-projet)
-  - [1. Cloner le Dépôt](#1-cloner-le-dépôt)
-  - [2. Installer les Dépendances](#2-installer-les-dépendances)
-  - [3. Variables d'Environnement](#3-variables-denvironnement)
-- [Lancer l'Application](#lancer-lapplication)
-  - [Frontend (Vue.js)](#frontend-vuejs)
-  - [Backend (Fastify)](#backend-fastify)
-- [Exécuter les Tests](#exécuter-les-tests)
-  - [Tests Frontend](#tests-frontend)
-  - [Tests Backend](#tests-backend)
-- [Compiler pour la Production](#compiler-pour-la-production)
-  - [Frontend](#frontend-1)
-  - [Backend](#backend-1)
-- [Support des Types pour les Imports `.vue` en TS](#support-des-types-pour-les-imports-vue-en-ts)
-- [Personnaliser la Configuration](#personnaliser-la-configuration)
+## 🏗️ Architecture du projet
 
-## Configuration IDE Recommandée
+Le projet est organisé selon une architecture claire et modulaire :
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (et désactiver Vetur).
+- **Frontend** : Situé à la racine du projet, développé avec Vue.js
+- **Backend** : Situé dans le dossier `/backend`, implémente une API RESTful
 
-## Stack Technique
+### Technologies utilisées
 
-- **Frontend** : Vue 3, Vite, TypeScript, Pinia (supposé pour la gestion d'état), Vue Router
-- **Backend** : Fastify, Node.js, TypeScript, MongoDB
-- **Tests** : Vitest (pour le frontend)
+#### 🖥️ Frontend
 
-## Structure du Projet
+- ⚡ **Vue 3** - Framework JavaScript progressif
+- 🛠️ **Vite** - Outil de build ultrarapide
+- 📘 **TypeScript** - Typage statique pour JavaScript
+- 🏪 **Pinia** - Gestion d'état pour Vue 3
+- 🧭 **Vue Router** - Routage officiel pour Vue.js
+
+#### ⚙️ Backend
+
+- 🚀 **Fastify** - Framework web rapide et à faible overhead
+- 🟢 **Node.js** - Environnement d'exécution JavaScript côté serveur
+- 📘 **TypeScript** - Typage statique pour JavaScript
+- 🍃 **MongoDB** - Base de données NoSQL orientée document
+- 🔐 **JWT** - Authentification sécurisée
+
+#### 🧪 Tests
+
+- 🔍 **Vitest** - Framework de test unitaire pour Vue
+
+## 🚀 Installation & Lancement
+
+### Prérequis
+
+Avant de commencer, assurez-vous d'avoir installé :
+
+- Node.js (version LTS recommandée)
+- npm ou yarn
+- MongoDB (local ou distant)
+
+### 1️⃣ Cloner le dépôt
+
+```bash
+git clone <url-du-depot>
+cd intranet-3wa
+```
+
+### 2️⃣ Installer les dépendances
+
+```bash
+# Installation des dépendances frontend
+npm install
+
+# Installation des dépendances backend
+cd backend
+npm install
+cd ..
+```
+
+### 3️⃣ Configuration des variables d'environnement
+
+Créez un fichier `.env` à la racine pour le frontend :
+
+```
+VITE_API_BASE_URL=http://localhost:3000/api/v1
+```
+
+Créez un fichier `.env` dans le dossier `backend/` :
+
+```
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/intranet3wa
+JWT_EXPIRES_IN=1d
+JWT_SECRET=votreCleSecrete
+COOKIE_SECRET=votreCleSecreteCookie
+```
+
+### 4️⃣ Lancer l'application
+
+#### Frontend (Vue.js)
+
+```bash
+# À la racine du projet
+npm run dev
+```
+
+Le frontend sera accessible à l'adresse `http://localhost:5173`
+
+#### Backend (Fastify)
+
+```bash
+# Dans un autre terminal
+cd backend
+npm run dev
+```
+
+Le backend sera accessible à l'adresse `http://localhost:3000`
+
+## 🧪 Tests
+
+### Tests Frontend
+
+```bash
+# À la racine du projet
+npm run test:unit
+```
+
+### Tests Backend
+
+```bash
+cd backend
+npm run test
+```
+
+## 📡 API et Collection Postman
+
+Une collection Postman est disponible pour tester l'API de l'application. Elle inclut toutes les routes de l'API, y compris la nouvelle route `PUT /profile` pour la mise à jour du profil utilisateur.
+
+### Importation de la collection Postman
+
+1. Ouvrez Postman
+2. Cliquez sur le bouton "Import" en haut à gauche
+3. Sélectionnez le fichier `Intranet-3WA.postman_collection.json` situé dans le dossier `/docs/postman` du projet
+4. La collection sera importée avec tous les endpoints configurés
+
+### Endpoints principaux
+
+- **POST /auth/login** - Authentification utilisateur
+- **GET /users** - Récupération de tous les utilisateurs
+- **GET /users/:id** - Récupération d'un utilisateur spécifique
+- **POST /users** - Création d'un nouvel utilisateur (admin)
+- **PUT /users/:id** - Mise à jour d'un utilisateur (admin)
+- **DELETE /users/:id** - Suppression d'un utilisateur (admin)
+- **PUT /profile** - Mise à jour du profil de l'utilisateur connecté
+
+### Utilisation de la collection
+
+1. Commencez par exécuter la requête "Login" pour obtenir un token d'authentification
+2. Le token est automatiquement stocké dans les variables de la collection
+3. Les autres requêtes utilisent ce token pour l'authentification
+
+## 📂 Structure des dossiers
 
 ```
 Intranet 3WA/
@@ -42,154 +156,58 @@ Intranet 3WA/
 │   ├── src/
 │   │   ├── application/      # Cas d'utilisation, DTOs
 │   │   ├── domain/           # Entités, interfaces, services de domaine
-│   │   ├── infrastructure/   # Répertoires (Repositories), modèles BDD, authentification
+│   │   ├── infrastructure/   # Répertoires, modèles BDD, authentification
 │   │   └── presentation/     # Contrôleurs, routes, middlewares
-│   └── package.json          # Dépendances spécifiques au backend (si présentes)
-├── diagrammes/               # Diagrammes d'architecture ou autres
-├── public/                   # Ressources statiques pour le frontend (servies par Vite)
-├── src/                      # Code source de l'application frontend Vue.js
-│   ├── assets/
-│   ├── components/
-│   ├── router/
-│   ├── services/
-│   ├── store/
-│   └── views/
-├── .env                      # Variables d'environnement racine (si présentes, probablement pour le frontend)
-├── .gitignore
-├── index.html                # HTML principal pour le frontend
-├── package.json              # Dépendances et scripts du projet racine
-├── README.md                 # Ce fichier
+├── docs/                     # Documentation
+│   └── postman/              # Collection Postman pour tester l'API
+├── public/                   # Ressources statiques
+├── src/                      # Code source frontend Vue.js
+│   ├── assets/               # Images, styles, etc.
+│   ├── components/           # Composants réutilisables
+│   ├── router/               # Configuration des routes
+│   ├── services/             # Services d'API et utilitaires
+│   ├── store/                # Gestion d'état (Pinia)
+│   ├── types/                # Définitions de types TypeScript
+│   └── views/                # Composants de page
+├── .env                      # Variables d'environnement
 └── vite.config.ts            # Configuration de Vite
 ```
 
-## Prérequis
+## 📝 Fonctionnalités principales
 
-Avant de commencer, assurez-vous d'avoir installé les éléments suivants :
-- Node.js (version LTS recommandée)
-- npm (fourni avec Node.js) ou yarn
-- MongoDB (si exécuté localement, sinon assurez-vous que la chaîne de connexion est configurée)
+- 👋 Page d'accueil avec présentation aléatoire d'un collaborateur
+- 👥 Recherche et filtrage des collaborateurs par différents critères
+- 👤 Profils utilisateurs détaillés
+- 🔐 Authentification sécurisée
+- 👑 Panneau d'administration pour les utilisateurs autorisés
 
-## Mise en Place du Projet
+## 🌐 Déploiement
 
-### 1. Cloner le Dépôt
-
-```sh
-git clone <url-du-depot>
-cd intranet-3wa
-```
-
-### 2. Installer les Dépendances
-
-Ce projet pourrait être un monorepo. Installez les dépendances depuis le répertoire racine. S'il y a un `package.json` dans le répertoire `backend` et qu'il est géré comme un espace de travail (workspace) npm, `npm install` depuis la racine devrait s'en occuper. Sinon, vous pourriez avoir besoin d'installer les dépendances du backend séparément.
-
-```sh
-npm install
-```
-Si le backend a son propre `package.json` et ne fait pas partie des espaces de travail npm :
-```sh
-cd backend
-npm install
-cd ..
-```
-
-### 3. Variables d'Environnement
-
-Ce projet utilise des fichiers `.env` pour la configuration.
-
-- **Frontend** :
-  Créez un fichier `.env` dans le répertoire racine (copiez depuis `.env.example` s'il existe).
-  Variables d'exemple :
-  ```env
-  VITE_API_BASE_URL=http://localhost:3001/api
-  ```
-
-- **Backend** :
-  Créez un fichier `.env` dans le répertoire `backend/` (copiez depuis `backend/.env.example` s'il existe).
-  Variables d'exemple :
-  ```env
-  PORT=3001
-  MONGODB_URI=mongodb://localhost:27017/intranet3wa
-  JWT_SECRET=votreCleSecrete
-  ```
-  Assurez-vous que votre serveur MongoDB est en cours d'exécution et accessible avec l'URI fournie.
-
-## Lancer l'Application
-
-### Frontend (Vue.js)
-
-Pour compiler et recharger à chaud pour le développement :
-```sh
-npm run dev
-```
-Cela démarrera généralement le frontend sur `http://localhost:5173` (port Vite par défaut).
-
-### Backend (Fastify)
-
-Naviguez vers le répertoire backend et démarrez le serveur de développement. (En supposant un script `dev` dans `backend/package.json` ou un script racine pour le backend).
-
-Si vous utilisez des espaces de travail npm (et qu'un script comme `dev:backend` existe dans le `package.json` racine) :
-```sh
-npm run dev:backend
-```
-Ou, si vous exécutez depuis le répertoire backend :
-```sh
-cd backend
-npm run dev
-```
-Cela démarrera généralement le serveur backend, par exemple, sur `http://localhost:3001`. Vérifiez la configuration du backend ou la sortie de la console pour le port exact.
-
-## Exécuter les Tests
-
-### Tests Frontend
-
-Exécutez les tests unitaires avec Vitest :
-```sh
-npm run test:unit
-```
-
-### Tests Backend
-
-(En supposant un script `test` dans `backend/package.json` ou un script racine pour le backend).
-
-Si vous utilisez des espaces de travail npm (et qu'un script comme `test:backend` existe dans le `package.json` racine) :
-```sh
-npm run test:backend
-```
-Ou, si vous exécutez depuis le répertoire backend :
-```sh
-cd backend
-npm run test
-```
-
-## Compiler pour la Production
+Pour compiler l'application pour la production :
 
 ### Frontend
 
-Vérification des types, compilation et minification pour la production :
-```sh
+```bash
 npm run build
 ```
-Le build de production sera dans le dossier `dist/`.
+
+Les fichiers de production seront générés dans le dossier `dist/`
 
 ### Backend
 
-(En supposant un script `build` dans `backend/package.json` ou un script racine pour le backend).
-
-Si vous utilisez des espaces de travail npm (et qu'un script comme `build:backend` existe dans le `package.json` racine) :
-```sh
-npm run build:backend
-```
-Ou, si vous exécutez depuis le répertoire backend :
-```sh
+```bash
 cd backend
 npm run build
 ```
-Cela créera généralement un dossier `dist` ou `build` dans le répertoire `backend` avec le JavaScript compilé.
 
-## Support des Types pour les Imports `.vue` en TS
+## 🙌 Contributeurs
 
-TypeScript ne peut pas gérer les informations de type pour les imports `.vue` par défaut, nous remplaçons donc le CLI `tsc` par `vue-tsc` pour la vérification des types. Dans les éditeurs, nous avons besoin de [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) pour que le service de langage TypeScript soit conscient des types `.vue`.
+- Équipe 3WA
 
-## Personnaliser la Configuration
+## 📜 Licence
 
-Voir la [Référence de Configuration de Vite](https://vite.dev/config/). Pour la configuration du backend, référez-vous à la documentation de Fastify et à la configuration spécifique du projet dans `backend/src/`.
+Ce projet est sous licence MIT.
+
+---
+
+© 2025 Léo & Edouard. Tous droits réservés.
