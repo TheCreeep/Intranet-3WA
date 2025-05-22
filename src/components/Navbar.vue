@@ -6,6 +6,7 @@
 
     <!-- All items will now be effectively in navbar-end for a full flex layout -->
     <div class="navbar-menu-right">
+      <router-link to="/accueil" class="navbar-item">Accueil</router-link>
       <router-link to="/collaborateurs" class="navbar-item">Collaborateurs</router-link>
       <router-link v-if="isAdmin" to="/admin" class="navbar-item">Admin</router-link>
       

@@ -37,20 +37,21 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../store/authStore'; // Import the auth store
 
 const email = ref('');
 const password = ref('');
 const emailInput = ref<HTMLInputElement | null>(null);
 const router = useRouter();
+const route = useRoute();
 const auth = useAuthStore(); // Use the auth store
 
 onMounted(() => {
   document.title = 'Connexion';
   // If user is already logged in (e.g. from persisted session), redirect them
   if (auth.isLoggedIn) {
-    router.push({ name: 'collaborateurs' }); // Corrected route name
+    router.push({ name: 'accueil' }); // Redirection vers l'accueil
     return;
   }
   if (emailInput.value) {
@@ -68,11 +69,12 @@ const handleLogin = async () => {
     // The router guard will handle redirection if login is successful and `auth.isLoggedIn` becomes true.
     // However, we can also explicitly redirect based on role if needed immediately after login.
     if (auth.isLoggedIn) {
-      if (auth.userRole === 'admin') {
-        // router.push({ name: 'adminDashboard' }); // Example for admin redirect
-        router.push({ name: 'collaborateurs' }); // Corrected route name
+      // S'il y a un paramètre de redirection, l'utiliser, sinon rediriger vers l'accueil
+      const redirectPath = route.query.redirect as string | undefined;
+      if (redirectPath) {
+        router.push(redirectPath);
       } else {
-        router.push({ name: 'collaborateurs' }); // Corrected route name
+        router.push({ name: 'accueil' });
       }
     }
   } catch (error) {

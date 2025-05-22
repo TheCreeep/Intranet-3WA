@@ -3,6 +3,7 @@ import LoginView from '../views/LoginView.vue'
 import CollaboratorSearchView from '../views/CollaboratorSearchView.vue'
 import AdminView from '../views/AdminView.vue'; // Import AdminView
 import ProfileView from '../views/ProfileView.vue'; // Import ProfileView
+import AccueilView from '../views/AccueilView.vue'; // Import AccueilView
 import { useAuthStore } from '../store/authStore';
 
 // REMOVED: Top-level store instantiation and initialization will be moved to main.ts
@@ -48,15 +49,16 @@ export const routes = [
     meta: { requiresAuth: true } // Protected profile route
   },
   {
+    path: '/accueil',
+    name: 'accueil',
+    component: AccueilView,
+    meta: { requiresAuth: true } // Protected route
+  },
+  {
     path: '/', // Root path
     redirect: () => {
       if (isAuthenticated()) {
-        const role = getUserRole();
-        if (role === 'admin') {
-          // return { name: 'adminDashboard' }; // Redirect admin to their dashboard
-          return { name: 'collaborateurs' }; // Default to collaborateurs for admin
-        }
-        return { name: 'collaborateurs' }; // Default for other authenticated users
+        return { name: 'accueil' }; // Default to accueil for authenticated users
       }
       return { name: 'login' }; // Redirect unauthenticated to login
     }
@@ -66,7 +68,7 @@ export const routes = [
     path: '/:pathMatch(.*)*', 
     redirect: () => {
       if (isAuthenticated()) {
-        return { name: 'collaborateurs' }; // Or a 404 page for authenticated users
+        return { name: 'accueil' }; // Redirect to accueil
       }
       return { name: 'login' };
     }
@@ -93,12 +95,7 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
     next({ name: 'login', query: { redirect: to.fullPath } });
   } else if (to.name === 'login' && authenticated) {
     // If user is logged in and tries to access login page, redirect to a default authenticated page
-    if (userRole === 'admin') {
-      // next({ name: 'adminDashboard' });
-      next({ name: 'collaborateurs' });
-    } else {
-      next({ name: 'collaborateurs' });
-    }
+    next({ name: 'accueil' });
   } else if (requiresAuth && authenticated && requiredRoles) {
     // If route requires specific roles
     const hasRequiredRole =
@@ -107,9 +104,7 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
 
     if (!hasRequiredRole) {
       // User does not have the required role, redirect to an unauthorized page or a fallback
-      // For now, redirecting to collaborateurs or a generic 'unauthorized' view if you create one.
-      // Or simply don't let them navigate by calling next(false) or next({ name: 'fallbackRoute' })
-      next({ name: 'collaborateurs' }); // Fallback, consider an 'UnauthorizedView' page
+      next({ name: 'accueil' }); // Redirect to accueil if not authorized
     } else {
       next(); // User has the role, proceed
     }
